@@ -64,6 +64,7 @@ def manager_init() -> None:
     ("dp_toyota_enhanced_bsm", "0"),
     ("dp_toyota_auto_lock", "0"),
     ("dp_toyota_auto_unlock", "0"),
+    ("dp_device_display_off_mode", "0"),
     ("dp_device_audible_alert_mode", "0"),
     ("dp_device_disable_temp_check", "0"),
     ("dp_car_dashcam_mode_removal", "0"),
