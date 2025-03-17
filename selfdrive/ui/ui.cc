@@ -427,30 +427,27 @@ void Device::updateWakefulness(const UIState &s) {
   // tr("Disabled"), tr("On-Road") tr("MAIN"), tr("OP"), tr("Off")}
   if (s.scene.ignition && s.dp_device_display_off_mode > 0) {
     // Off - the display will be off completely (incl. warning).
-    if (s.dp_device_display_off_mode == 4) {
-      interactive_timeout = 0;
-    } else {
-      const SubMaster &sm = *(s.sm);
-      auto cs = sm["carState"].getCarState().getCruiseState();
-      Alert alert = Alert::get(*(s.sm), s.scene.started_frame);
-      // if there is a warning, always show screen
-      if (alert.status == cereal::ControlsState::AlertStatus::USER_PROMPT || alert.status == cereal::ControlsState::AlertStatus::CRITICAL) {
+
+    const SubMaster &sm = *(s.sm);
+    auto cs = sm["carState"].getCarState().getCruiseState();
+    Alert alert = Alert::get(*(s.sm), s.scene.started_frame);
+    // if there is a warning, always show screen
+    if (alert.status == cereal::ControlsState::AlertStatus::USER_PROMPT || alert.status == cereal::ControlsState::AlertStatus::CRITICAL) {
+      resetInteractiveTimeout();
+    // op - When OP is enabled, the display will be off
+    } else if (s.dp_device_display_off_mode == 3) {
+      if (!cs.getEnabled()) {
         resetInteractiveTimeout();
-      // op - When OP is enabled, the display will be off
-      } else if (s.dp_device_display_off_mode == 3) {
-        if (!cs.getEnabled()) {
-          resetInteractiveTimeout();
-        }
-      // main - When ACC MAIN is on, the display will be off
-      } else if (s.dp_device_display_off_mode == 2) {
-        if (!cs.getAvailable()) {
-          resetInteractiveTimeout();
-        }
-      // on-road - When driving, the display will be off
-      } else if (s.dp_device_display_off_mode == 1) {
-        if (!s.scene.ignition) {
-          resetInteractiveTimeout();
-        }
+      }
+    // main - When ACC MAIN is on, the display will be off
+    } else if (s.dp_device_display_off_mode == 2) {
+      if (!cs.getAvailable()) {
+        resetInteractiveTimeout();
+      }
+    // on-road - When driving, the display will be off
+    } else if (s.dp_device_display_off_mode == 1) {
+      if (!s.scene.ignition) {
+        resetInteractiveTimeout();
       }
     }
     setAwake(interactive_timeout > 0);

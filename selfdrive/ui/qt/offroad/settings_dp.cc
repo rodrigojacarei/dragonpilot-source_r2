@@ -202,9 +202,9 @@ void DPCtrlPanel::add_device_toggles() {
     },
   };
 
-  std::vector<QString> display_off_mode_texts{tr("Standard"), tr("On-Road"), tr("MAIN"), tr("OP"), tr("Off")};
+  std::vector<QString> display_off_mode_texts{tr("Standard"), tr("On-Road"), tr("MAIN"), tr("OP")};
   ButtonParamControl* display_off_mode_setting = new ButtonParamControl("dp_device_display_off_mode", tr("Display Mode"),
-                                          tr("Standard - Standard behaviour.\nOn-Road - When driving, the display will be off (excl. warning).\nMAIN - When ACC MAIN is on, the display will be off (excl. warning).\nOP - When OP is enabled, the display will be off (excl. warning).\nOff - the display will be off completely (incl. warning).\nReboot required."),
+                                          tr("Standard - Standard behaviour.\nOn-Road - When driving, the display will be off (excl. warning).\nMAIN - When ACC MAIN is on, the display will be off (excl. warning).\nOP - When OP is enabled, the display will be off (excl. warning).\nReboot required."),
                                           "",
                                           display_off_mode_texts);
 
