@@ -311,6 +311,8 @@ UIState::UIState(QObject *parent) : QObject(parent) {
   prime_type = std::atoi(params.get("PrimeType").c_str());
   language = QString::fromStdString(params.get("LanguageSetting"));
 
+  dp_device_display_off_mode = std::atoi(params.get("dp_device_display_off_mode").c_str());
+
   // update timer
   timer = new QTimer(this);
   QObject::connect(timer, &QTimer::timeout, this, &UIState::update);
@@ -421,7 +423,41 @@ void Device::updateWakefulness(const UIState &s) {
     emit interactiveTimeout();
   }
 
-  setAwake(s.scene.ignition || interactive_timeout > 0);
+  // rick - display mode
+  // tr("Disabled"), tr("On-Road") tr("MAIN"), tr("OP"), tr("Off")}
+  if (s.scene.ignition && s.dp_device_display_off_mode > 0) {
+    // Off - the display will be off completely (incl. warning).
+    if (s.dp_device_display_off_mode == 4) {
+      interactive_timeout = 0;
+    } else {
+      const SubMaster &sm = *(s.sm);
+      auto cs = sm["carState"].getCarState().getCruiseState();
+      Alert alert = Alert::get(*(s.sm), s.scene.started_frame);
+      // if there is a warning, always show screen
+      if (alert.status == cereal::ControlsState::AlertStatus::USER_PROMPT || alert.status == cereal::ControlsState::AlertStatus::CRITICAL) {
+        resetInteractiveTimeout();
+      // op - When OP is enabled, the display will be off
+      } else if (s.dp_device_display_off_mode == 3) {
+        if (!cs.getEnabled()) {
+          resetInteractiveTimeout();
+        }
+      // main - When ACC MAIN is on, the display will be off
+      } else if (s.dp_device_display_off_mode == 2) {
+        if (!cs.getAvailable()) {
+          resetInteractiveTimeout();
+        }
+      // on-road - When driving, the display will be off
+      } else if (s.dp_device_display_off_mode == 1) {
+        if (!s.scene.ignition) {
+          resetInteractiveTimeout();
+        }
+      }
+    }
+    setAwake(interactive_timeout > 0);
+  } else {
+    setAwake(s.scene.ignition || interactive_timeout > 0);
+  }
+//  setAwake(s.scene.ignition || interactive_timeout > 0);
 }
 
 UIState *uiState() {

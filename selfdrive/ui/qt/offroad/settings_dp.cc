@@ -202,6 +202,12 @@ void DPCtrlPanel::add_device_toggles() {
     },
   };
 
+  std::vector<QString> display_off_mode_texts{tr("Standard"), tr("On-Road"), tr("MAIN"), tr("OP"), tr("Off")};
+  ButtonParamControl* display_off_mode_setting = new ButtonParamControl("dp_device_display_off_mode", tr("Display Mode"),
+                                          tr("Standard - Standard behaviour.\nOn-Road - When driving, the display will be off (excl. warning).\nMAIN - When ACC MAIN is on, the display will be off (excl. warning).\nOP - When OP is enabled, the display will be off (excl. warning).\nOff - the display will be off completely (incl. warning).\nReboot required."),
+                                          "",
+                                          display_off_mode_texts);
+
   std::vector<QString> audible_alert_mode_texts{tr("Standard"), tr("Warning"), tr("Off")};
   ButtonParamControl* audible_alert_mode_setting = new ButtonParamControl("dp_device_audible_alert_mode", tr("Audible Alert Mode"),
                                           tr("Standard - Standard behaviour.\nWarning - Only emits sound when there is a warning.\nOff - Does not emit any sound at all."),
@@ -230,6 +236,8 @@ void DPCtrlPanel::add_device_toggles() {
       });
       auto_shutdown_timer_toggle->setVisible(false);
       addItem(auto_shutdown_timer_toggle);
+      // display off mode
+      addItem(display_off_mode_setting);
       // audible alert mode
       addItem(audible_alert_mode_setting);
     }
