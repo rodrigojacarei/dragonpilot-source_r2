@@ -1,3 +1,7 @@
+Version 0.9.7 (TBD)
+========================
+* Honda City 2023 (Brazil) support
+
 Version 0.9.6 (2023-12-14)
 ========================
 * AGNOS 9

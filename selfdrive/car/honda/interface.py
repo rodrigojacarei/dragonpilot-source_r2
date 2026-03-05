@@ -206,6 +206,15 @@ class CarInterface(CarInterfaceBase):
       else:
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.8], [0.24]]  # TODO: can probably use some tuning
 
+    elif candidate == CAR.CITY:
+      ret.mass = 3125 * CV.LB_TO_KG
+      ret.wheelbase = 2.6
+      ret.centerToFront = ret.wheelbase * 0.41
+      ret.steerRatio = 19.0
+      ret.lateralParams.torqueBP, ret.lateralParams.torqueV = [[0, 4096], [0, 4096]]
+      ret.tireStiffnessFactor = 0.5
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.8], [0.24]]
+
     elif candidate == CAR.ACURA_RDX:
       ret.mass = 3935. * CV.LB_TO_KG
       ret.wheelbase = 2.68
